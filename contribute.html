@@ -1,0 +1,64 @@
+<html>
+<head>
+	<title>投稿ページ</title>
+	<!-- Load jQuery -->
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	 
+	<!-- Load jQuery.selection plugin-->
+	<script src="jquery.selection.js"></script>
+	 
+	<script>
+	  $(document).ready(function(){
+	    $('#do-replace').on('click', function(e){
+	      e.preventDefault();
+	 
+	      <!-- replace selected text by FOOBAR / 選択テキストを「FOOBAR」に置き換え -->
+	      $('#textarea').selection('replace', {text: 'FOOBAR'});
+	    })
+	  });
+	</script>
+</head>
+
+<body>
+	<h1>新規投稿</h1>
+	<form action="contribute.php" method="post" enctype="multipart/form-data">
+	<table border="1">
+		<tr>
+		<td>サブ</td>
+		<td><input type="text" name="sub"></td>
+		</tr>
+
+		<tr>
+		<td>タイトル</td>
+		<td><input type="text" name="title"></td>
+		</tr>
+
+		<tr>
+		<td>投稿内容</td>
+		<td><textarea name="detail" rows="4" cols="40"></textarea></td>
+		</tr>
+
+		<tr>
+		<td>投稿画像</td>
+		<td>
+		<INPUT type="hidden" name="MAX_FILE_SIZE" value="65536">
+		<input type="file" name="upfile"></td>
+		</tr>
+
+		<tr>
+		<td>ギャラリー投稿</td>
+		<td>
+			<input type="radio" name="flag" value="0" >する
+			<input type="radio" name="flag" value="1" >しない
+		</td>
+		</tr>
+
+		<tr>
+		<td colspan="2" align="center">
+		<input type="submit" name="submit" value="UpLoad">
+		<input type="reset" value="リセット">
+		</td>
+		</tr>
+	</table>
+	</form>
+</body>

@@ -6,7 +6,6 @@
     jQuery.selection plugin
         http://madapaja.github.io/jquery.selection/ja_jp.html
         The MIT License
-
         Copyright © 2010-2012 Koji Iwasaki (@madapaja).
     */
     ?>
@@ -70,7 +69,7 @@
         <input type="button" id="img5" value="投稿画像5" />
     <br /><br />
         
-	<form action="contri_write.php" method="post" enctype="multipart/form-data">
+	<form action="preview2.php" method="post" enctype="multipart/form-data">
 	<table border="1">
 		<tr>
 		<td>タイトル</td>
@@ -139,7 +138,7 @@
         
 		<tr>
 		<td colspan="3" align="center">
-		<!-- <input type="submit" name="submit" value="UpLoad"> -->
+		<input type="submit" name="submit" value="UpLoad">
 		<input type="reset" value="リセット">
 		<input type="submit" name="pre" value="プレビューを見る"　formaction="showtest.php">
 		</td>

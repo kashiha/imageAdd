@@ -20,8 +20,10 @@ try {
     $file_id = "upfile".$img_number;
     $test = 0;
     
+    session_start();
+    
     /* アップロードがあったとき */
-    if (isset($_FILES[$file_id]['error']) && is_int($_FILES[$file_id]['error'])) {
+    while (isset($_FILES[$file_id]['error']) && is_int($_FILES[$file_id]['error'])) {
 
         // バッファリングを開始
         ob_start();
@@ -126,6 +128,21 @@ try {
                 ),
             ));
             
+            //画像データをセッションに保存
+            //id, imageid, name, type, raw_data, thumb_data
+            
+            
+            $_SESSION["img"][$img_number]["article_id"] = $next_article_id;
+            $_SESSION["img"][$img_number]["article_img_id"] = $img_number;
+            $_SESSION["img"][$img_number]["img_name"] = $_FILES[$file_id]['name'];
+            $_SESSION["img"][$img_number]["img_type"] = $info[2];
+            $_SESSION["img"][$img_number]["img_data"] =file_get_contents($_FILES['upfile1']['tmp_name']);
+            $_SESSION["img"][$img_number]["thumb_data"] = ob_get_clean();
+            
+            $id = $_SESSION["img"][$img_number]["article_id"];
+            $img = $_SESSION["img"][$img_number]["img_data"];
+            $name = $_SESSION["img"][$img_number]["img_name"];
+            $type = $_SESSION["img"][$img_number]["img_type"];
 
             $msg = array('green', 'ファイルは正常にアップロードされました');
 			//6
@@ -144,9 +161,17 @@ try {
             $msg = array('red', $e->getMessage());
 
         }
+        
+        $img_number++;
+        $file_id = "upfile".$img_number;
+        
+        if ($img_number >=5) {
+            break;
+        }
 
     /* ID指定があったとき */
-    } elseif (isset($_GET['id'])) {
+    }
+/*    elseif (isset($_GET['id'])) {
 
         try {
 
@@ -182,13 +207,16 @@ try {
     else {
         $msg = "は？";
     }
-
+*/
+    /*
     // サムネイル一覧取得
     $rows = $pdo->query(implode(' ', array(
                 'SELECT id, name, type, thumb_data, date',
                 'FROM multiimage',
                 'ORDER BY date DESC',
             )))->fetchAll();
+    */
+    
 
 } catch (PDOException $e) { }
 	/*
@@ -209,7 +237,14 @@ try {
 <h1>プレビュー画面</h1>
 
 <?php echo "file_id:".$file_id ;
-    echo "test:".$test ; ?>
+    echo "test:".$test."<br /><br />" ; ?>
+    <?php //画像表示 ?>
+    <?=sprintf(
+           '<img src="data:%s;base64,%s" alt="%s" />',
+           image_type_to_mime_type($type),
+           base64_encode($img),
+           h($name)
+       )?><br /><br />
     
 <?php if (isset($msg)): ?>
   <fieldset>

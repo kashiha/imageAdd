@@ -11,28 +11,27 @@ if(isset($_POST["pre"]) && $_POST["pre"] !="")
 
  if (isset($_POST["submit"]) &&$_POST["submit"]!="")
  {
-  $sub= $_POST['sub'];
   $title = $_POST['title'];
   //\nを<br />に変換
-  $detail= nl2br($_POST['detail']);
-  $flag = $_POST['flag'];
+  $airticle_content= nl2br($_POST['detail']);
+  $flag = $_POST['galley1'];
   
-  if ($_FILES["upfile"]["tmp_name"]=="")
+  if ($_FILES["upfile1"]["tmp_name"]=="")
   {
    print("ファイルのアップロードができませんでした。<BR>\n
    もしくはファイルが選択されていません");
    exit;
   }
-  $fp = fopen($_FILES["upfile"]["tmp_name"], "rb");
+  $fp = fopen($_FILES["upfile1"]["tmp_name"], "rb");
   if(!$fp)
   {
    print("アップロードしたファイルを開けませんでした");
    exit;
   }
-  $imgdat = fread($fp, filesize($_FILES["upfile"]["tmp_name"]));
+  $imgdat = fread($fp, filesize($_FILES["upfile1"]["tmp_name"]));
   fclose($fp);
 
-  print("ファイルサイズ：{$_FILES["upfile"]["size"]}<BR>\n");
+  print("ファイルサイズ：{$_FILES["upfile1"]["size"]}<BR>\n");
   $len = strlen($imgdat);
   print("データ長 = $len<BR>");
 
@@ -41,8 +40,8 @@ if(isset($_POST["pre"]) && $_POST["pre"] !="")
   //DBへの接続
   require "database.php";
 
-  $sql = "INSERT INTO data(sub, title, detail, img, garellyFlag)
-  values('$sub', '$title', '$detail', '$imgdat','$flag')";
+  $sql = "INSERT INTO data(title, detail, img, garellyFlag)
+  values('$title', '$airticle_content', '$imgdat','$flag')";
   $result = mysql_query($sql);
   if (!$result)
   {

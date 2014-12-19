@@ -140,7 +140,7 @@
 		<td colspan="3" align="center">
 		<input type="submit" name="submit" value="UpLoad">
 		<input type="reset" value="リセット">
-		<input type="submit" name="pre" value="プレビューを見る"　formaction="showtest.php">
+		<input type="submit" name="preview" value="プレビューを見る">
 		</td>
 		</tr>
 	</table>

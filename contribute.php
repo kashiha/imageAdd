@@ -29,6 +29,7 @@
 
 <?php
 	session_start();
+    //ログインしていない場合トップに戻る
 	if(!(isset($_SESSION['userId'])) || $_SESSION['userId'] == ""){
 		header('Location: http://localhost/yui/login.html', true, 301);
 		exit();
@@ -69,7 +70,7 @@
         <input type="button" id="img5" value="投稿画像5" />
     <br /><br />
         
-	<form action="preview2.php" method="post" enctype="multipart/form-data">
+	<form action="preview.php" method="post" enctype="multipart/form-data">
 	<table border="1">
 		<tr>
 		<td>タイトル</td>
@@ -138,7 +139,6 @@
         
 		<tr>
 		<td colspan="3" align="center">
-		<input type="submit" name="submit" value="UpLoad">
 		<input type="reset" value="リセット">
 		<input type="submit" name="preview" value="プレビューを見る">
 		</td>

@@ -6,10 +6,8 @@
     $pass = $_POST['pass'];
 
     //DBへ接続
-    //require "database.php";
-    $host = "localhost";
-
-    $mysqli = new mysqli($host, 'root', 's1413109db', 'yuitf2');
+    require "database.php";
+    $mysqli = new mysqli($host, $db_user, $db_pass, $table_name);
     //エラーが発生したら
     if ($mysqli->connect_error){
       print("接続失敗：" . $mysqli->connect_error);

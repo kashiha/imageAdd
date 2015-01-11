@@ -33,6 +33,20 @@
             
             session_start();
             
+            //現在投稿されている記事の中で最も新しいもののIDを取得
+            $get_newest_article_sql = 'select article_id from articles ORDER BY article_id DESC limit 1';
+            $newest_article = $pdo->prepare($get_newest_article_sql);
+            $newest_article->execute();
+           
+            if (!($newest_article_id = $newest_article->fetch())) {
+                $next_article_id = 1;
+            }
+            else {
+                $next_article_id = $newest_article_id['article_id'] + 1;
+            }
+            unset($newest_article_id);
+            $_SESSION["article_id"] = $next_article_id;
+            
             /* アップロードがあったとき */
             while (isset($_FILES[$file_id]['error']) && is_int($_FILES[$file_id]['error']) && $_FILES[$file_id]['error'] == 0) {
             
@@ -102,20 +116,20 @@
                         'VALUES (?, ?, ?, ?, ?, ?, ?)',
                     )));
                     */
-
+                    /*
                     //現在投稿されている記事の中で最も新しいもののIDを取得
                     $get_newest_article_sql = 'select article_id from articles ORDER BY article_id DESC limit 1';
                     $newest_article = $pdo->prepare($get_newest_article_sql);
                     $newest_article->execute();
                    
-                    if (!$newest_article_id = $newest_article->fetch()) {
+                    if (!($newest_article_id = $newest_article->fetch())) {
                         $next_article_id = 1;
                     }
                     else {
                         $next_article_id = $newest_article_id['id'] + 1;
                     }
                     unset($newest_article_id);
-
+                    */
                     /*
                     $add_img_sql->execute(array(
                         $next_article_id,
@@ -135,7 +149,6 @@
                     $bool_add_galley = "galley".$img_number;
                                         
                     //画像データをセッションに保存
-                    $_SESSION["article_id"][$img_number] = $next_article_id;
                     $_SESSION["article_img_id"][$img_number] = $img_number;
                     $_SESSION["img_name"][$img_number] = $_FILES[$file_id]['name'];
                     $_SESSION["img_type"][$img_number] = $info[2];
@@ -182,6 +195,11 @@
                 $tmp_article_content = $pieces[1];
                 //echo $pieces[0]."<br /><br />";
                 //echo $pieces[1]."<br /><br />";
+                //file-5の後の記事内容の余りを保存
+                if ($file_num == 5) {
+                    $last_num = $file_num + 1;
+                    $_SESSION["divide_article"][$last_num] = $tmp_article_content;
+                }
             }
             else {
                 $_SESSION["divide_article"][$file_num] = $tmp_article_content;
@@ -305,7 +323,7 @@
     if (isset($_SESSION["article_title"])) {
         echo "<h2>タイトル：".$_SESSION["article_title"]."</h2>";
     }
-    for ($i=1;$i<=5;$i++) {
+    for ($i=1;$i<=6;$i++) {
         if (isset($_SESSION["divide_article"][$i])) {
             echo $_SESSION["divide_article"][$i];
         }

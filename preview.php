@@ -141,7 +141,7 @@
                     $_SESSION["img_type"][$img_number] = $info[2];
                     $_SESSION["img_data"][$img_number] = file_get_contents($_FILES[$file_id]['tmp_name']);
                     $_SESSION["thumb_data"][$img_number] = ob_get_clean();
-                    $_SESSION["galley_flag"][$img_number] = $_POST[$bool_add_galley];
+                    $_SESSION["galley_flag"][$img_number] = (int) $_POST[$bool_add_galley];
 
                     $msg = array('green', 'ファイルは正常にアップロードされました');
  
@@ -206,14 +206,105 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Preview</title>
+    <?php /* 
+    <link rel="stylesheet" href="css/main3.css" type="text/css" />
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen"/>
+    */ ?>
 </head>
 
 <body>
+<?php /*
+<div id="text">
+<div class="content">
+	<ul id="sdt_menu" class="sdt_menu">
 
-<h1>プレビュー画面</h1>
-    
+		<li>
+			<a href="">
+				<img src="images/1.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">ミッション</span>
+					<span class="sdt_descr">Mission</span>
+				</span>
+			</a>
+		</li>
+
+		<li>
+			<a href="">
+				<img src="images/3.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">紹介</span>
+					<span class="sdt_descr">intro</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a href="">
+				<img src="images/4.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">メンバー</span>
+					<span class="sdt_descr">Member</span>
+				</span>
+			</a>
+			<div class="sdt_box">
+					<a href="recruit.html">メンバー募集</a>
+			</div>
+		</li>
+
+		<li>
+			<a href="">
+				<img src="images/5.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">ギャラリー</span>
+					<span class="sdt_descr">Our photograph</span>
+				</span>
+			</a>
+		</li>
+
+	<li>
+			<a href="">
+				<img src="images/7.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">ダイアリー</span>
+					<span class="sdt_descr">Diary</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a href="">
+				<img src="images/6.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">お問い合わせ</span>
+					<span class="sdt_descr">Contact</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a href="">
+				<img src="images/8.jpg" alt=""/>
+				<span class="sdt_active"></span>
+				<span class="sdt_wrap">
+					<span class="sdt_link">受信報告</span>
+					<span class="sdt_descr">Report</span>
+				</span>
+			</a>
+		</li>
+	</ul>
+</div>
+
+<div id="column">
+    */ ?>
+    <h1>プレビュー画面</h1>
     <?php
     //投稿内容の表示
+    if (isset($_SESSION["article_title"])) {
+        echo "<h2>タイトル：".$_SESSION["article_title"]."</h2>";
+    }
     for ($i=1;$i<=5;$i++) {
         if (isset($_SESSION["divide_article"][$i])) {
             echo $_SESSION["divide_article"][$i];
@@ -224,7 +315,6 @@
         //サムネイルの表示
         if (isset($_SESSION["img_name"][$i])) {
             echo "<br />";
-            echo h($_SESSION["img_name"][$i]);
             echo "<br />";
             echo sprintf(
                 '<img src="data:%s;base64,%s" alt="%s" />',
@@ -234,17 +324,23 @@
             );
         }
     }
-    if (isset($msg)): ?>
-        <fieldset>
-        <legend>メッセージ</legend>
-        <span style="color:<?=h($msg[0])?>;"><?=h($msg[1])?></span>
-        </fieldset>
-    <?php endif; ?>
+    ?>
 
-    <br />
-<a href ="contribute.php">戻る</a>
-<?php echo "　"; ?>
-<a href ="addarticlecomplete.php">投稿する</a>
+    <br /><br />
+    <a href ="contribute.php">戻る</a>
+    <?php echo "　"; ?>
+    <a href ="addarticlecomplete.php">投稿する</a>
 
+<?php /*
+</div>
+
+<img src="IMG_0158.JPG" width="1200px" />
+<br /><br />
+<center>
+<font color="black">プロジェクト</font>
+</center>
+
+</div>
+*/ ?>
 </body>
 </html>

@@ -29,7 +29,7 @@
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             )
         );
-        //新規記事の登録
+        //新規記事の追加
         try {
             $add_article_sql = $pdo->prepare(implode(' ', array(
                 'INSERT',
@@ -54,16 +54,22 @@
 
         }
         
-        // 画像のINSERT処理
-        for ($img_number=1;isset($_SESSION["img_name"][$img_number]);$img_number++) {
+        $img_number=1;
+        $add_img_sql = $pdo->prepare(implode(' ', array(
+            'INSERT',
+            'INTO images(article_id, article_img_number, img_name, img_type, raw_data, thumb_data, is_galley)',
+            'VALUES (?, ?, ?, ?, ?, ?, ?)',
+        )));
+        $add_article_sentence_sql = $pdo->prepare(implode(' ', array(
+            'INSERT',
+            'INTO article_contents(article_id, sentence_number, article_sentence)',
+            'VALUES (?, ?, ?)',
+        )));
+        for ($img_number;isset($_SESSION["img_name"][$img_number]);$img_number++) {
             try {
-                $add_img_sql = $pdo->prepare(implode(' ', array(
-                    'INSERT',
-                    'INTO images(article_id, article_img_number, img_name, img_type, raw_data, thumb_data, is_galley)',
-                    'VALUES (?, ?, ?, ?, ?, ?, ?)',
-                )));
+                // 画像のINSERT処理
                 $add_img_sql->execute(array(
-                    $_SESSION["article_id"][$img_number],
+                    $_SESSION["article_id"],
                     $_SESSION["article_img_id"][$img_number],
                     $_SESSION["img_name"][$img_number],
                     $_SESSION["img_type"][$img_number],
@@ -71,8 +77,16 @@
                     $_SESSION["thumb_data"][$img_number],
                     $_SESSION["galley_flag"][$img_number],
                 ));
+                //分割した記事内容の追加処理
+                $add_article_sentence_sql->execute(array(
+                    $_SESSION["article_id"],
+                    $img_number,
+                    $_SESSION["divide_article"][$img_number],                
+                ));
+                
                 $msg = array('green', 'ファイルは正常にアップロードされました');
                 $name = $_SESSION["img_name"][$img_number];
+                
             } catch (PDOException $e) {
 
                     ob_end_clean(); // バッファをクリア
@@ -87,7 +101,27 @@
 
                 }
         }
+        $add_article_sentence_sql->execute(array(
+                    $_SESSION["article_id"],
+                    $img_number,
+                    $_SESSION["divide_article"][$img_number],                
+        ));
     } catch (PDOException $e) { }
+    
+    //sessionのリセット
+    unset($_SESSION["article_id"]);
+    unset($_SESSION["article_img_id"]);
+    unset($_SESSION["img_name"]);
+    unset($_SESSION["img_type"]);
+    unset($_SESSION["img_data"]);
+    unset($_SESSION["thumb_data"]);
+    unset($_SESSION["galley_flag"]);
+    unset($_SESSION["divide_article"]);
+    unset($_SESSION["article_title"]);
+    
+    
+    
+    
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">

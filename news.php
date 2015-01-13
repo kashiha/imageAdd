@@ -22,7 +22,7 @@
         array(
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_NAMED,
         )
     );
     
@@ -35,11 +35,22 @@
     $time = $tmp_select_article['add_date'];
     
     //投稿内容取得
-    $select_article_sentence_sql = 'select count(*) from article_contents ORDER BY article_id = \''.$select_article_id.'\'';
+    $select_article_sentence_sql = 'select article_sentence from article_contents where article_id = '.$select_article_id;
     $select_article_sentence = $pdo->prepare($select_article_sentence_sql);
     $select_article_sentence->execute();
-    $tmp_article_sentence = $select_article_sentence->fetch();
+    $article_sentence = $select_article_sentence->fetchAll();
     //for($sen_count=1;isset())
+    
+    //記事内画像取得
+    $select_article_img_sql = 'select img_type, img_name, thumb_data from images where article_id = '.$select_article_id;
+    $select_article_img = $pdo->prepare($select_article_img_sql);
+    $select_article_img->execute();
+    $article_img = $select_article_img->fetchAll();
+    
+    /************ memo ***************
+        fetch() 単一のカラムを取得
+        fetchAll()　全てのカラムを取得
+    *********************************/
     
 ?>
 
@@ -50,33 +61,50 @@
 
 <body>
     <?php
-    var_dump($tmp_article_sentence);
-    //投稿内容の表示
-    /*
-    if (isset($_SESSION["article_title"])) {
-        echo "<h2>タイトル：".$_SESSION["article_title"]."</h2>";
+    //タイトルの表示
+    if (isset($title)) {
+        echo "<h2>タイトル：".$title."</h2>";
     }
-    for ($i=1;$i<=6;$i++) {
-        if (isset($_SESSION["divide_article"][$i])) {
-            echo $_SESSION["divide_article"][$i];
+    $img_number=0;
+    //画像がある場合、つまり投稿内容が分割されて保存されている場合
+    if (isset($article_img[$img_number])) {
+        for ($img_number;isset($article_img[$img_number]);$img_number++) {
+            //分割している記事内容の表示
+            if (isset($article_sentence[$img_number]["article_sentence"])) {
+                echo $article_sentence[$img_number]["article_sentence"];
+            }
+            //
+            else {
+                break;
+            }
+            //サムネイルの表示
+            if (isset($article_img[$img_number]["img_name"])) {
+                echo "<br />";
+                echo "<br />";
+                echo sprintf(
+                    '<img src="data:%s;base64,%s" alt="%s" />',
+                    image_type_to_mime_type($article_img[$img_number]["img_type"]),
+                    base64_encode($article_img[$img_number]["thumb_data"]),
+                    h($article_img[$img_number]["img_name"])
+                );
+            }
         }
-        else {
-            break;
-        }
-        //サムネイルの表示
-        if (isset($_SESSION["img_name"][$i])) {
-            echo "<br />";
-            echo "<br />";
-            echo sprintf(
-                '<img src="data:%s;base64,%s" alt="%s" />',
-                image_type_to_mime_type($_SESSION["img_type"][$i]),
-                base64_encode($_SESSION["thumb_data"][$i]),
-                h($_SESSION["img_name"][$i])
-            );
+        //分割した記事で5番目の画像以降に文章がある場合表示
+        if (isset($article_sentence[$img_number]["article_sentence"])) {
+            echo $article_sentence[$img_number]["article_sentence"];
         }
     }
-    */
-    echo $title;
+    //記事内容が単一な場合
+    else {
+        //記事内容の表示
+        if (isset($article_sentence[$img_number]["article_sentence"])) {
+            echo $article_sentence[$img_number]["article_sentence"];
+        }
+    }
+    //表示内容のリセット
+    unset($article_sentence);
+    unset($article_img);
+    unset($title);
     ?>
     </body>
 </html>

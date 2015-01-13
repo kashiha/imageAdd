@@ -98,7 +98,7 @@
     unset($_SESSION["img_data"]);
     unset($_SESSION["thumb_data"]);
     unset($_SESSION["galley_flag"]);
-    //unset($_SESSION["divide_article"]);
+    unset($_SESSION["divide_article"]);
     unset($_SESSION["article_title"]);
 
 ?>

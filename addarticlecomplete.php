@@ -40,34 +40,14 @@
                 $_SESSION["article_title"],
                 $_SESSION['userId']
             ));
-        } catch (PDOException $e) {
-
-                    ob_end_clean(); // バッファをクリア
-                    header($header, true, 500);
-                    $msg = array('red', 'INSERT処理中にエラーが発生しました');
-
-        } catch (RuntimeException $e) {
-
-            ob_end_clean(); // バッファをクリア
-            header($header, true, $e->getCode()); 
-            $msg = array('red', $e->getMessage());
-
-        }
         
-        $img_number=1;
-        $add_img_sql = $pdo->prepare(implode(' ', array(
-            'INSERT',
-            'INTO images(article_id, article_img_number, img_name, img_type, raw_data, thumb_data, is_galley)',
-            'VALUES (?, ?, ?, ?, ?, ?, ?)',
-        )));
-        $add_article_sentence_sql = $pdo->prepare(implode(' ', array(
-            'INSERT',
-            'INTO article_contents(article_id, sentence_number, article_sentence)',
-            'VALUES (?, ?, ?)',
-        )));
-        for ($img_number;isset($_SESSION["img_name"][$img_number]);$img_number++) {
-            try {
+            for ($img_number=1;isset($_SESSION["img_name"][$img_number]);$img_number++) {
                 // 画像のINSERT処理
+                $add_img_sql = $pdo->prepare(implode(' ', array(
+                    'INSERT',
+                    'INTO images(article_id, article_img_number, img_name, img_type, raw_data, thumb_data, is_galley)',
+                    'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                )));
                 $add_img_sql->execute(array(
                     $_SESSION["article_id"],
                     $_SESSION["article_img_id"][$img_number],
@@ -77,35 +57,37 @@
                     $_SESSION["thumb_data"][$img_number],
                     $_SESSION["galley_flag"][$img_number],
                 ));
+            }
+            for ($sentence_number=1;isset($_SESSION["divide_article"][$sentence_number]);$sentence_number++) {
                 //分割した記事内容の追加処理
+                $add_article_sentence_sql = $pdo->prepare(implode(' ', array(
+                    'INSERT',
+                    'INTO article_contents(article_id, sentence_number, article_sentence)',
+                    'VALUES (?, ?, ?)',
+                )));
                 $add_article_sentence_sql->execute(array(
                     $_SESSION["article_id"],
-                    $img_number,
-                    $_SESSION["divide_article"][$img_number],                
+                    $sentence_number,
+                    $_SESSION["divide_article"][$sentence_number],                
                 ));
                 
                 $msg = array('green', 'ファイルは正常にアップロードされました');
-                $name = $_SESSION["img_name"][$img_number];
-                
-            } catch (PDOException $e) {
-
-                    ob_end_clean(); // バッファをクリア
-                    header($header, true, 500);
-                    $msg = array('red', 'INSERT処理中にエラーが発生しました');
-
-                } catch (RuntimeException $e) {
-
-                    ob_end_clean(); // バッファをクリア
-                    header($header, true, $e->getCode()); 
-                    $msg = array('red', $e->getMessage());
-
-                }
+                //$name = $_SESSION["img_name"][$img_number];
+            }
+        } catch (PDOException $e) {
+            header($header, true, 500);
+            $msg = array('red', 'INSERT処理中にエラーが発生しました');
+        } catch (RuntimeException $e) {
+            header($header, true, $e->getCode()); 
+            $msg = array('red', $e->getMessage());
         }
+        /*
         $add_article_sentence_sql->execute(array(
                     $_SESSION["article_id"],
                     $img_number,
                     $_SESSION["divide_article"][$img_number],                
         ));
+        */
     } catch (PDOException $e) { }
     
     //sessionのリセット
@@ -116,20 +98,16 @@
     unset($_SESSION["img_data"]);
     unset($_SESSION["thumb_data"]);
     unset($_SESSION["galley_flag"]);
-    unset($_SESSION["divide_article"]);
+    //unset($_SESSION["divide_article"]);
     unset($_SESSION["article_title"]);
-    
-    
-    
-    
+
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>投稿完了</title>
-    </head>
+<head>
+    <title>投稿完了</title>
+</head>
 <body>
-
 <?php if (isset($msg)): ?>
   <fieldset>
     <legend>メッセージ</legend>

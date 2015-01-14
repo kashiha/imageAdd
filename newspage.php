@@ -187,7 +187,7 @@
             }
         }
         //投稿時間の表示
-        echo "<HR><Div Align=\"right\">投稿時間：".$time."</Div>";
+        echo "<br /><br /><HR><Div Align=\"right\">投稿時間：".$time."</Div>";
         //表示内容のリセット
         unset($article_sentence);
         unset($article_img);

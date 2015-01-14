@@ -47,10 +47,14 @@ if ($_POST["submit"]!="") {
     
     if ($pass == $pass_confirm){
         //新規ユーザ登録
+        //pass暗号化
+        $passf = hash("sha256",$pass);
+        $passd = "sate".$passf."dogyui2";
+        $passt = hash("sha256",$passd);
         $introducer_info = $introducer_confirm->fetch_assoc();
         $introducer_id = $introducer_info['user_id'];
         $add_user_sql = "INSERT INTO users(user_name , user_pass, introducer_id)
-        values('$new_user_name', '$pass', '$introducer_id')";
+        values('$new_user_name', '$passt', '$introducer_id')";
 
         //登録成功
         if ($mysqli->query($add_user_sql)) {

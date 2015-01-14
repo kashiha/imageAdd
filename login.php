@@ -15,8 +15,12 @@
     }
     mysql_set_charset("utf8");
 
+    //pass暗号化
+    $passf = hash("sha256",$pass);
+    $passd = "sate".$passf."dogyui2";
+    $passt = hash("sha256",$passd);
     $userSelect = $mysqli->query("select * from users
-    where user_name = '$name' and user_pass = '$pass'");
+    where user_name = '$name' and user_pass = '$passt'");
 
     if (!$userSelect)
     {

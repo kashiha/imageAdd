@@ -13,7 +13,7 @@
     //閲覧記事番号の取得
     $select_article_id = $_GET['article_id'];
     
-    // データベースに接続  
+    // データベースに接続
     require "database.php";
     $pdo = new PDO(
         $db_set,
